@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = MultiProcess::VERSION
   spec.authors       = ["Jan Graichen"]
   spec.email         = ["jg@altimos.de"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
+  spec.summary       = %q{Handle multiple child processes.}
+  spec.description   = %q{Handle multiple child processes.}
+  spec.homepage      = "https://github.com/jgraichen/multi_process"
   spec.license       = "GPLv3"
 
   spec.files         = `git ls-files -z`.split("\x0")
