@@ -187,13 +187,12 @@ module MultiProcess
     #
     def start_childprocess
       env.each{|k, v| childprocess.environment[k.to_s] = v.to_s }
+      childprocess.cwd = dir
 
-      Dir.chdir(dir) do
-        if clean_env?
-          Bundler.with_clean_env { childprocess.start }
-        else
-          childprocess.start
-        end
+      if clean_env?
+        Bundler.with_clean_env { childprocess.start }
+      else
+        childprocess.start
       end
     end
   end
