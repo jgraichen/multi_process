@@ -13,6 +13,9 @@ module MultiProcess
     #
     attr_accessor :receiver
 
+    # Partition size.
+    attr_reader :partition
+
     # Create new process group.
     #
     # @param opts [ Hash ] Options
@@ -22,6 +25,8 @@ module MultiProcess
     def initialize(opts = {})
       @processes = []
       @receiver  = opts[:receiver] ? opts[:receiver] : MultiProcess::Logger.global
+      @partition = opts[:partition] ? opts[:partition].to_i : 0
+      @mutex     = Mutex.new
     end
 
     # Add new process or list of processes.
@@ -33,7 +38,7 @@ module MultiProcess
     def <<(process)
       Array(process).flatten.each do |process|
         processes << process
-        # process.receiver = receiver
+        process.receiver = receiver
 
         if started?
           start process
@@ -89,14 +94,27 @@ module MultiProcess
 
     # Start all process and wait for them to terminate.
     #
-    # Given options will be passed to {#wait}.
+    # Given options will be passed to {#start} and {#wait}.
+    # {#start} will only be called if partition is zero.
     #
     # If timeout is given process will be terminated using {#stop}
     # when timeout error is raised.
     #
     def run(opts = {})
-      start
-      wait opts
+      if partition > 0
+        threads = Array.new
+        partition.times do
+          threads << Thread.new do
+            while (process = next_process)
+              process.run
+            end
+          end
+        end
+        threads.each &:join
+      else
+        start opts
+        wait opts
+      end
     ensure
       stop
     end
@@ -130,6 +148,15 @@ module MultiProcess
 
       Timeout.timeout timeout do
         processes.each{|p| p.available! }
+      end
+    end
+
+    private
+    def next_process
+      @mutex.synchronize do
+        @index ||= 0
+        @index += 1
+        processes[@index - 1]
       end
     end
   end
