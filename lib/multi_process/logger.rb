@@ -38,6 +38,10 @@ module MultiProcess
       pipe.gets
     end
 
+    def collapse?
+      @opts[:collapse].nil? || @opts[:collapse]
+    end
+
     private
     def output(process, line, opts = {})
       @mutex.synchronize do
@@ -50,7 +54,7 @@ module MultiProcess
         end
 
         io = opts[:io] || @out
-        if @last_name == name
+        if @last_name == name && collapse?
           io.print " #{' ' * name.length} #{opts[:delimiter]} "
         else
           io.print " #{name} #{opts[:delimiter]} "

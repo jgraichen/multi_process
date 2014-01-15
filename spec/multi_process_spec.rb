@@ -5,7 +5,7 @@ describe MultiProcess do
   it 'should run processes' do
     reader, writer = IO.pipe
 
-    logger = MultiProcess::Logger.new writer
+    logger = MultiProcess::Logger.new writer, collapse: false
     group  = MultiProcess::Group.new receiver: logger
     group << MultiProcess::Process.new(%w(ruby spec/files/test.rb A), title: 'rubyA')
     group << MultiProcess::Process.new(%w(ruby spec/files/test.rb B), title: 'rubyB')
