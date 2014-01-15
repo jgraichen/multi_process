@@ -29,7 +29,7 @@ module MultiProcess
       @env          = opts[:env] if Hash === opts[:env]
       @env_clean    = opts[:clean_env].nil? ? true : !!opts[:clean_env]
 
-      self.receiver = MultiProcess::Logger.global
+      self.receiver = opts[:receiver] || MultiProcess::Logger.global
 
       self.dir      = Dir.pwd
       self.dir      = opts[:dir].to_s if opts[:dir]
