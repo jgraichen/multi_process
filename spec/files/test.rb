@@ -4,5 +4,3 @@
   $stdout.flush
   sleep rand
 end
-
-

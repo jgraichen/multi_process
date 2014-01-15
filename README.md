@@ -21,7 +21,8 @@ Or install it yourself as:
 ## Usage
 
 ```
-group = MultiProcess::Group.new
+receiver = MultiProcess::Logger $stdout, $stderr, sys: false
+group = MultiProcess::Group.new receiver: receiver
 group << MultiProcess::Process.new %w(ruby test.rb), title: 'rubyA'
 group << MultiProcess::Process.new %w(ruby test.rb), title: 'rubyB'
 group << MultiProcess::Process.new %w(ruby test.rb), title: 'rubyC'

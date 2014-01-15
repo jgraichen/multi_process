@@ -1,54 +1,71 @@
 module MultiProcess
 
+  # Can create pipes and multiplex pipe content to put into
+  # given IO objects e.g. multiple output from multiple
+  # processes to current stdout.
   #
-  #
-  class Logger
+  class Logger < Receiver
 
-    def initialize(io = nil)
-      @io    = io || STDOUT
-      @mutex = Mutex.new
-      @readers = {}
+    # Create new logger.
+    #
+    # @param out [IO] IO to push formatted output from
+    #   default created logger pipes.
+    # @param err [IO] IO to push formatted output from
+    #   error sources.
+    #
+    def initialize(*args)
+      @opts  = Hash === args.last ? args.pop : Hash.new
+      @out   = args[0] || $stdout
+      @err   = args[1] || $stderr
 
-      Thread.new do
-        begin
-          loop do
-            io = IO.select(@readers.keys, nil, nil, 0.1)
-            (io.nil? ? [] : io.first).each do |reader|
-              if reader.eof?
-                @readers.delete_if { |key, value| key == reader }
-              else
-                output_with_mutex @readers[reader], reader.read_nonblock(4096)
-              end
-            end
-          end
-        rescue Exception => ex
-          puts ex.message
-          puts ex.backtrace
-        end
+      super()
+    end
+
+    protected
+
+    def received(process, name, line)
+      case name
+      when :err, :stderr
+        output process, line, io: @err, delimiter: 'E>'
+      when :out, :stdout
+        output process, line
+      when :sys
+        output(process, line, delimiter: '$>')# if @opts[:sys]
       end
     end
 
-    def create_pipe(process)
-      reader, writer = IO.pipe
-      @readers[reader] = process
-      writer
+    def read(pipe)
+      pipe.gets
     end
 
     private
-    def output_with_mutex(process, blob)
+    def output(process, line, opts = {})
       @mutex.synchronize do
-        output process, blob
+        opts[:delimiter]   ||= ' |'
+        name = if opts[:name]
+          opts[:name].to_s.dup
+        else
+          max = @readers.values.map{|h| h[:process] ? h[:process].title.length : 0 }.max
+          process ? process.title.to_s.rjust(max, ' ') : (' ' * max)
+        end
+
+        io = opts[:io] || @out
+        if @last_name == name
+          io.print " #{' ' * name.length} #{opts[:delimiter]} "
+        else
+          io.print " #{name} #{opts[:delimiter]} "
+        end
+        io.puts line
+        io.flush
+
+        @last_name = name
       end
     end
 
-    def output(process, blob)
-      max   = @readers.values.map(&:title).map(&:length).max
-      front = "(#{process.pid.to_s.rjust(5, '0')}) #{process.title.rjust(max, ' ')} | "
-      blob.split(/\n+/).each do |line|
-        @io.print front
-        @io.puts line
+    class << self
+      def global
+        @global ||= self.new $stdout, $stderr
       end
-      @io.flush
     end
   end
 end
