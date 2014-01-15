@@ -7,6 +7,7 @@ module MultiProcess
   require 'multi_process/group'
   require 'multi_process/receiver'
   require 'multi_process/nil_receiver'
+  require 'multi_process/string_receiver'
   require 'multi_process/logger'
 
   require 'multi_process/process'

@@ -18,12 +18,12 @@ module MultiProcess
           loop do
             io = IO.select(@readers.keys, nil, nil, 0.1)
             (io.nil? ? [] : io.first).each do |reader|
+              op = @readers[reader]
+
               if reader.eof?
-                op = @readers[reader]
                 @readers.delete_if { |key, value| key == reader }
                 removed op[:process], op[:name]
               else
-                op = @readers[reader]
                 received op[:process], op[:name], read(reader)
               end
             end

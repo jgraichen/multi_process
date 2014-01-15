@@ -54,4 +54,12 @@ describe MultiProcess do
     group.run
     expect(Time.now - start).to be_within(0.3).of(2)
   end
+
+  it 'should env processes' do
+    receiver = MultiProcess::StringReceiver.new
+    process  = MultiProcess::Process.new(%w(ruby spec/files/env.rb TEST), env: {'TEST' => "abc"}, receiver: receiver)
+    process.run
+
+    expect(receiver.get(:out)).to eq "ENV: abc\n"
+  end
 end
