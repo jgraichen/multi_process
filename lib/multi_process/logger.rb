@@ -30,7 +30,7 @@ module MultiProcess
       when :out, :stdout
         output process, line
       when :sys
-        output(process, line, delimiter: '$>')# if @opts[:sys]
+        output(process, line, delimiter: '$>') if @opts[:sys]
       end
     end
 
