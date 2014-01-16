@@ -24,7 +24,11 @@ class MultiProcess::Process
       self.server = opts[:server] if opts[:server]
       self.port   = opts[:port]   if opts[:port]
 
-      super ['rails', 'server', server, '--port', port].reject(&:nil?).map(&:to_s), opts
+      super *server_command, opts
+    end
+
+    def server_command
+      ['rails', 'server', server, '--port', port].reject(&:nil?).map(&:to_s)
     end
 
     def server=(server)
