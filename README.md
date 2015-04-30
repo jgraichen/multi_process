@@ -1,6 +1,6 @@
 # MultiProcess
 
-Handle multiple processes.
+Handle multiple processes. Ruby >= 2.0.
 
 TODO: Just experiment.
 

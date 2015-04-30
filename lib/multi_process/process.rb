@@ -1,13 +1,13 @@
 require 'active_support/core_ext/module/delegation'
 
 module MultiProcess
-
+  #
   # Describes a single process that can be configured and run.
   #
   # {Process} basically is just a thin wrapper around {ChildProcess}.
   #
   class Process
-    #@!group Process
+    # @!group Process
 
     # Process title used in e.g. logger
     attr_reader :title
@@ -23,7 +23,7 @@ module MultiProcess
       opts = (Hash === args.last ? args.pop : {})
 
       @title        = opts[:title].to_s || args.first.to_s.strip.split(/\s+/, 2)[0]
-      @command      = args.map{ |arg| (arg =~ /\A[\s"']+\z/ ? arg.inspect : arg).gsub '"', '\"' }.join(' ')
+      @command      = args.map { |arg| (arg =~ /\A[\s"']+\z/ ? arg.inspect : arg).gsub '"', '\"' }.join(' ')
       @childprocess = create_childprocess *args
 
       @env          = opts[:env] if Hash === opts[:env]
@@ -63,7 +63,7 @@ module MultiProcess
       return false if started?
 
       at_exit { stop }
-      receiver.message(self, :sys, self.command) if receiver
+      receiver.message(self, :sys, command) if receiver
       start_childprocess
       @started = true
     end
@@ -116,7 +116,7 @@ module MultiProcess
       wait opts
     end
 
-  #@!group Working Directory
+    # @!group Working Directory
 
     # Working directory for child process.
     attr_reader :dir
@@ -126,10 +126,10 @@ module MultiProcess
     #
     def dir=(dir)
       @dir = ::File.expand_path(dir.to_s)
-      self.env['PWD'] = @dir
+      env['PWD'] = @dir
     end
 
-    #@!group Environment
+    # @!group Environment
 
     # Check if environment will be cleaned up for process.
     #
@@ -144,17 +144,17 @@ module MultiProcess
     # Return current environment.
     #
     def env
-      @env ||= Hash.new
+      @env ||= {}
     end
 
     # Set environment.
     #
     def env=(env)
-      raise ArgumentError.new 'Environment must be a Hash.' unless hash === env
+      fail ArgumentError.new 'Environment must be a Hash.' unless hash === env
       @env = env
     end
 
-    #@!group Receiver
+    # @!group Receiver
 
     # Current receiver. Defaults to `MultiProcess::Logger.global`.
     #
@@ -186,7 +186,7 @@ module MultiProcess
     # Can be used to hook in subclasses and modules.
     #
     def start_childprocess
-      env.each{|k, v| childprocess.environment[k.to_s] = v.to_s }
+      env.each { |k, v| childprocess.environment[k.to_s] = v.to_s }
       childprocess.cwd = dir
 
       if clean_env?

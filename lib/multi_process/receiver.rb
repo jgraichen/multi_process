@@ -1,10 +1,8 @@
 module MultiProcess
-
   # Can handle input from multiple processes and run custom
   # actions on event and output.
   #
   class Receiver
-
     # Mutex to synchronize operations.
     #
     attr_reader :mutex
@@ -21,7 +19,7 @@ module MultiProcess
               op = @readers[reader]
 
               if reader.eof?
-                @readers.delete_if { |key, value| key == reader }
+                @readers.delete_if { |key, _value| key == reader }
                 removed op[:process], op[:name]
               else
                 received op[:process], op[:name], read(reader)
@@ -43,7 +41,7 @@ module MultiProcess
     #
     def pipe(process, name)
       reader, writer = IO.pipe
-      @readers[reader] = {name: name, process: process}
+      @readers[reader] = { name: name, process: process }
       connected process, name
       writer
     end
@@ -61,8 +59,8 @@ module MultiProcess
     #
     # Must be overridden by subclass.
     #
-    def received(process, name, message)
-      raise NotImplementedError.new 'Subclass responsibility.'
+    def received(_process, _name, _message)
+      fail NotImplementedError.new 'Subclass responsibility.'
     end
 
     # Read content from pipe. Can be used to provide custom reading
@@ -77,14 +75,12 @@ module MultiProcess
     # Called after pipe for process and name was removed because it
     # reached EOF.
     #
-    def removed(process, name)
-
+    def removed(_process, _name)
     end
 
     # Called after new pipe for process and name was created.
     #
-    def connected(process, name)
-
+    def connected(_process, _name)
     end
   end
 end

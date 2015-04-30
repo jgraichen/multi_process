@@ -1,9 +1,9 @@
 module MultiProcess
-
+  #
   # Store and run a group of processes.
   #
   class Group
-
+    #
     # Return list of processes.
     attr_reader :processes
 
@@ -22,10 +22,10 @@ module MultiProcess
     # @option otps [ Receiver ] :receiver Receiver to use for new added
     #   processes. Defaults to `MultiProcess::Logger.global`.
     #
-    def initialize(opts = {})
+    def initialize(receiver: nil, partition: nil)
       @processes = []
-      @receiver  = opts[:receiver] ? opts[:receiver] : MultiProcess::Logger.global
-      @partition = opts[:partition] ? opts[:partition].to_i : 0
+      @receiver  = receiver ? receiver : MultiProcess::Logger.global
+      @partition = partition ? partition.to_i : 0
       @mutex     = Mutex.new
     end
 
@@ -35,14 +35,12 @@ module MultiProcess
     #
     # @param process [Process, Array<Process>] New process or processes.
     #
-    def <<(process)
-      Array(process).flatten.each do |process|
+    def <<(processes)
+      Array(processes).flatten.each do |process|
         processes << process
         process.receiver = receiver
 
-        if started?
-          start process
-        end
+        start process if started?
       end
     end
 
@@ -50,15 +48,14 @@ module MultiProcess
     #
     # Call blocks until all processes are started.
     #
-    # @param opts [ Hash ] Options.
-    # @option opts [ Integer ] :delay Delay in seconds between starting processes.
+    # @option delay [Integer] Delay in seconds between starting processes.
     #
-    def start(opts = {})
+    def start(delay: nil)
       processes.each do |process|
-        unless process.started?
-          process.start
-          sleep opts[:delay] if opts[:delay]
-        end
+        next if process.started?
+
+        process.start
+        sleep delay if delay
       end
     end
 
@@ -67,15 +64,13 @@ module MultiProcess
     # @return [ Boolean ] True if group was already started.
     #
     def started?
-      processes.any? &:started?
+      processes.any?(&:started?)
     end
 
     # Stop all processes.
     #
     def stop
-      processes.each do |process|
-        process.stop
-      end
+      processes.each(&:stop)
     end
 
     # Wait until all process terminated.
@@ -84,11 +79,11 @@ module MultiProcess
     # @option opts [ Integer ] :timeout Timeout in seconds to wait before
     #   raising {Timeout::Error}.
     #
-    def wait(opts = {})
-      opts[:timeout] ||= 30
-
-      ::Timeout::timeout(opts[:timeout]) do
-        processes.each{|p| p.wait}
+    def wait(timeout: nil)
+      if timeout
+        ::Timeout.timeout(timeout) { wait }
+      else
+        processes.each(&:wait)
       end
     end
 
@@ -100,20 +95,18 @@ module MultiProcess
     # If timeout is given process will be terminated using {#stop}
     # when timeout error is raised.
     #
-    def run(opts = {})
+    def run(**kwargs)
       if partition > 0
-        threads = Array.new
-        partition.times do
-          threads << Thread.new do
+        partition.times.map do
+          Thread.new do
             while (process = next_process)
               process.run
             end
           end
-        end
-        threads.each &:join
+        end.each(&:join)
       else
-        start opts
-        wait opts
+        start(**kwargs)
+        wait(**kwargs)
       end
     ensure
       stop
@@ -124,14 +117,14 @@ module MultiProcess
     # @return [ Boolean ] True if group is alive.
     #
     def alive?
-      processes.any? &:alive?
+      processes.any?(&:alive?)
     end
 
     # Check if group is available. The group is available if all
     # processes are available.
     #
     def available?
-      !processes.any?{|p| !p.available? }
+      processes.all?(:available?)
     end
 
     # Wait until group is available. This implies waiting until
@@ -143,15 +136,14 @@ module MultiProcess
     # @option opts [ Integer ] :timeout Timeout in seconds to wait for processes
     #   to become available. Defaults to {MultiProcess::DEFAULT_TIMEOUT}.
     #
-    def available!(opts = {})
-      timeout = opts[:timeout] ? opts[:timeout].to_i : MultiProcess::DEFAULT_TIMEOUT
-
+    def available!(timeout: MultiProcess::DEFAULT_TIMEOUT)
       Timeout.timeout timeout do
-        processes.each{|p| p.available! }
+        processes.each(&:available!)
       end
     end
 
     private
+
     def next_process
       @mutex.synchronize do
         @index ||= 0

@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe MultiProcess do
-
   it 'should run processes' do
     reader, writer = IO.pipe
 
@@ -57,7 +56,7 @@ describe MultiProcess do
 
   it 'should env processes' do
     receiver = MultiProcess::StringReceiver.new
-    process  = MultiProcess::Process.new(%w(ruby spec/files/env.rb TEST), env: {'TEST' => "abc"}, receiver: receiver)
+    process  = MultiProcess::Process.new(%w(ruby spec/files/env.rb TEST), env: { 'TEST' => 'abc' }, receiver: receiver)
     process.run
 
     expect(receiver.get(:out)).to eq "ENV: abc\n"

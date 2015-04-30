@@ -1,11 +1,9 @@
 module MultiProcess
-
   # Can create pipes and multiplex pipe content to put into
   # given IO objects e.g. multiple output from multiple
   # processes to current stdout.
   #
   class Logger < Receiver
-
     # Create new logger.
     #
     # @param out [IO] IO to push formatted output from
@@ -14,7 +12,7 @@ module MultiProcess
     #   error sources.
     #
     def initialize(*args)
-      @opts  = Hash === args.last ? args.pop : Hash.new
+      @opts  = Hash === args.last ? args.pop : {}
       @out   = args[0] || $stdout
       @err   = args[1] || $stderr
 
@@ -43,14 +41,15 @@ module MultiProcess
     end
 
     private
+
     def output(process, line, opts = {})
       @mutex.synchronize do
         opts[:delimiter]   ||= ' |'
         name = if opts[:name]
-          opts[:name].to_s.dup
-        else
-          max = @readers.values.map{|h| h[:process] ? h[:process].title.length : 0 }.max
-          process ? process.title.to_s.rjust(max, ' ') : (' ' * max)
+                 opts[:name].to_s.dup
+               else
+                 max = @readers.values.map { |h| h[:process] ? h[:process].title.length : 0 }.max
+                 process ? process.title.to_s.rjust(max, ' ') : (' ' * max)
         end
 
         io = opts[:io] || @out
@@ -68,7 +67,7 @@ module MultiProcess
 
     class << self
       def global
-        @global ||= self.new $stdout, $stderr
+        @global ||= new $stdout, $stderr
       end
     end
   end
