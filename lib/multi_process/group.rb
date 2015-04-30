@@ -95,7 +95,7 @@ module MultiProcess
     # If timeout is given process will be terminated using {#stop}
     # when timeout error is raised.
     #
-    def run(**kwargs)
+    def run(delay: nil, timeout: nil)
       if partition > 0
         partition.times.map do
           Thread.new do
@@ -105,8 +105,8 @@ module MultiProcess
           end
         end.each(&:join)
       else
-        start(**kwargs)
-        wait(**kwargs)
+        start delay: delay
+        wait timeout: timeout
       end
     ensure
       stop
