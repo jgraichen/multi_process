@@ -35,8 +35,8 @@ module MultiProcess
     #
     # @param process [Process, Array<Process>] New process or processes.
     #
-    def <<(processes)
-      Array(processes).flatten.each do |process|
+    def <<(procs)
+      Array(procs).flatten.each do |process|
         processes << process
         process.receiver = receiver
 
