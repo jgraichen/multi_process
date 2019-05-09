@@ -39,7 +39,7 @@ group.stop  # Stop processes
 (23314) rubyC | Output from C
 (23311) rubyB | Output from B
 (23308) rubyA | Output from A
-``
+```
 
 ## Contributing
 
