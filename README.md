@@ -51,7 +51,7 @@ group.stop  # Stop processes
 
 ## License
 
-Copyright (C) 2014  Jan Graichen
+Copyright (C) 2019  Jan Graichen
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
