@@ -16,6 +16,8 @@ module MultiProcess
       @out   = args[0] || $stdout
       @err   = args[1] || $stderr
 
+      @colwidth = 0
+
       super()
     end
 
@@ -32,6 +34,10 @@ module MultiProcess
       end
     end
 
+    def connected(process, _)
+      @colwidth = [process.title.to_s.length, @colwidth].max
+    end
+
     def read(pipe)
       pipe.gets
     end
@@ -43,26 +49,27 @@ module MultiProcess
     private
 
     def output(process, line, opts = {})
-      @mutex.synchronize do
-        opts[:delimiter]   ||= ' |'
-        name = if opts[:name]
-                 opts[:name].to_s.dup
+      opts[:delimiter]   ||= ' |'
+      name = if opts[:name]
+               opts[:name].to_s.dup
+             else
+               if process
+                 process.title.to_s.rjust(@colwidth, ' ')
                else
-                 max = @readers.values.map { |h| h[:process] ? h[:process].title.length : 0 }.max
-                 process ? process.title.to_s.rjust(max, ' ') : (' ' * max)
-        end
+                 (' ' * @colwidth)
+               end
+             end
 
-        io = opts[:io] || @out
-        if @last_name == name && collapse?
-          io.print " #{' ' * name.length} #{opts[:delimiter]} "
-        else
-          io.print " #{name} #{opts[:delimiter]} "
-        end
-        io.puts line
-        io.flush
-
-        @last_name = name
+      io = opts[:io] || @out
+      if @last_name == name && collapse?
+        io.print " #{' ' * name.length} #{opts[:delimiter]} "
+      else
+        io.print " #{name} #{opts[:delimiter]} "
       end
+      io.puts line
+      io.flush
+
+      @last_name = name
     end
 
     class << self

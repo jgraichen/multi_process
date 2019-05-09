@@ -7,17 +7,17 @@ describe MultiProcess do
     logger = MultiProcess::Logger.new writer, collapse: false
     group  = MultiProcess::Group.new receiver: logger
     group << MultiProcess::Process.new(%w(ruby spec/files/test.rb A), title: 'rubyA')
-    group << MultiProcess::Process.new(%w(ruby spec/files/test.rb B), title: 'rubyB')
-    group << MultiProcess::Process.new(%w(ruby spec/files/test.rb C), title: 'rubyC')
+    group << MultiProcess::Process.new(%w(ruby spec/files/test.rb B), title: 'rubyBB')
+    group << MultiProcess::Process.new(%w(ruby spec/files/test.rb C), title: 'rubyCCC')
     group.run
 
-    expect(reader.read_nonblock(4096).split("\n")).to match_array <<-EOF.gsub(/^\s+/, ' ').split("\n")
-    rubyB  | Output from B
-    rubyA  | Output from A
-    rubyA  | Output from A
-    rubyC  | Output from C
-    rubyC  | Output from C
-    rubyB  | Output from B
+    expect(reader.read_nonblock(4096).split("\n")).to match_array <<-EOF.gsub(/^\s+\./, '').split("\n")
+    .  rubyBB  | Output from B
+    .   rubyA  | Output from A
+    .   rubyA  | Output from A
+    . rubyCCC  | Output from C
+    . rubyCCC  | Output from C
+    .  rubyBB  | Output from B
     EOF
   end
 
