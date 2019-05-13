@@ -3,36 +3,6 @@ module MultiProcess
   # actions on event and output.
   #
   class Receiver
-    # Mutex to synchronize operations.
-    #
-    attr_reader :mutex
-
-    def initialize
-      @mutex   = Mutex.new
-      @readers = {}
-
-      Thread.new do
-        begin
-          loop do
-            io = IO.select(@readers.keys, nil, nil, 0.1)
-            (io.nil? ? [] : io.first).each do |reader|
-              op = @readers[reader]
-
-              if reader.eof?
-                @readers.delete_if { |key, _value| key == reader }
-                removed op[:process], op[:name]
-              else
-                received op[:process], op[:name], read(reader)
-              end
-            end
-          end
-        rescue Exception => ex
-          puts ex.message
-          puts ex.backtrace
-        end
-      end
-    end
-
     # Request a new pipe writer for given process and name.
     #
     # @param process [ Process ] Process requesting pipe.
@@ -41,8 +11,18 @@ module MultiProcess
     #
     def pipe(process, name)
       reader, writer = IO.pipe
-      @readers[reader] = { name: name, process: process }
-      connected process, name
+
+      Loop.instance.watch(reader) do |action, monitor|
+        case action
+        when :registered
+          connected(process, name)
+        when :ready
+          received(process, name, read(monitor.io))
+        when :eof
+          removed(process, name)
+        end
+      end
+
       writer
     end
 

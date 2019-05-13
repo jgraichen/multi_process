@@ -4,6 +4,7 @@ require 'childprocess'
 module MultiProcess
   DEFAULT_TIMEOUT = 60
 
+  require 'multi_process/loop'
   require 'multi_process/group'
   require 'multi_process/receiver'
   require 'multi_process/nil_receiver'
