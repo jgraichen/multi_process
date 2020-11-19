@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.1.0 - 2020-11-19
+### Feature
+-  Add support for IPv6 by using the hostname instead of the loopback IPv4 address (#2)
+
 ## 1.0.0 - 2019-05-13
 ### Fixed
 - Possible concurrent hash modification while iterating (#1)
