@@ -44,7 +44,7 @@ class MultiProcess::Process
     def available?
       fail ArgumentError.new "Cannot check availability for port #{port}." if port == 0
 
-      TCPSocket.new('127.0.0.1', port).close
+      TCPSocket.new('localhost', port).close
       true
     rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
       false
@@ -67,7 +67,7 @@ class MultiProcess::Process
 
     def free_port
       socket = Socket.new(:INET, :STREAM, 0)
-      socket.bind(Addrinfo.tcp('127.0.0.1', 0))
+      socket.bind(Addrinfo.tcp('localhost', 0))
       socket.local_address.ip_port
     ensure
       socket.close if socket
