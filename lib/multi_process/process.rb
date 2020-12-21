@@ -190,7 +190,7 @@ module MultiProcess
       childprocess.cwd = dir
 
       if clean_env?
-        Bundler.with_clean_env { childprocess.start }
+        Bundler.with_original_env { childprocess.start }
       else
         childprocess.start
       end
