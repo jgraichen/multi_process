@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MultiProcess
   # Can handle input from multiple processes and run custom
   # actions on event and output.
@@ -14,12 +16,12 @@ module MultiProcess
 
       Loop.instance.watch(reader) do |action, monitor|
         case action
-        when :registered
-          connected(process, name)
-        when :ready
-          received(process, name, read(monitor.io))
-        when :eof
-          removed(process, name)
+          when :registered
+            connected(process, name)
+          when :ready
+            received(process, name, read(monitor.io))
+          when :eof
+            removed(process, name)
         end
       end
 
@@ -40,7 +42,7 @@ module MultiProcess
     # Must be overridden by subclass.
     #
     def received(_process, _name, _message)
-      fail NotImplementedError.new 'Subclass responsibility.'
+      raise NotImplementedError.new 'Subclass responsibility.'
     end
 
     # Read content from pipe. Can be used to provide custom reading
@@ -55,12 +57,10 @@ module MultiProcess
     # Called after pipe for process and name was removed because it
     # reached EOF.
     #
-    def removed(_process, _name)
-    end
+    def removed(_process, _name); end
 
     # Called after new pipe for process and name was created.
     #
-    def connected(_process, _name)
-    end
+    def connected(_process, _name); end
   end
 end

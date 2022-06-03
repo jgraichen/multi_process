@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MultiProcess::Process
   # Provides functionality for a process that is a rails server
   # process.
@@ -12,21 +14,15 @@ class MultiProcess::Process
     #
     attr_reader :server
 
-    # Port server should be running on.
-    #
-    # Default will be a free port determined when process is created.
-    #
-    attr_reader :port
-
     def initialize(opts = {})
       self.server = opts[:server] if opts[:server]
       self.port   = opts[:port]   if opts[:port]
 
-      super *server_command, opts
+      super(*server_command, opts)
     end
 
     def server_command
-      ['rails', 'server', server, '--port', port].reject(&:nil?).map(&:to_s)
+      ['rails', 'server', server, '--port', port].compact.map(&:to_s)
     end
 
     def server=(server)
@@ -34,7 +30,7 @@ class MultiProcess::Process
     end
 
     def port=(port)
-      @port = port.to_i == 0 ? free_port : port.to_i
+      @port = port.to_i.zero? ? free_port : port.to_i
     end
 
     def port
@@ -42,7 +38,7 @@ class MultiProcess::Process
     end
 
     def available?
-      fail ArgumentError.new "Cannot check availability for port #{port}." if port == 0
+      raise ArgumentError.new "Cannot check availability for port #{port}." if port.zero?
 
       TCPSocket.new('localhost', port).close
       true
@@ -70,7 +66,7 @@ class MultiProcess::Process
       socket.bind(Addrinfo.tcp('localhost', 0))
       socket.local_address.ip_port
     ensure
-      socket.close if socket
+      socket&.close
     end
   end
 end

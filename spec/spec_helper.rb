@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rspec'
 
 require 'bundler'
@@ -5,7 +7,7 @@ Bundler.require
 
 require 'multi_process'
 
-Dir[File.expand_path('spec/support/**/*.rb')].each { |f| require f }
+Dir[File.expand_path('spec/support/**/*.rb')].sort.each {|f| require f }
 
 RSpec.configure do |config|
   # ## Mock Framework

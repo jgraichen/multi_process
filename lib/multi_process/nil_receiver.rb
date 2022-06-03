@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MultiProcess
   # Receiver implementation that does nothing on every input.
   #

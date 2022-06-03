@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MultiProcess
   #
   # Store and run a group of processes.
@@ -24,7 +26,7 @@ module MultiProcess
     #
     def initialize(receiver: nil, partition: nil)
       @processes = []
-      @receiver  = receiver ? receiver : MultiProcess::Logger.global
+      @receiver  = receiver || MultiProcess::Logger.global
       @partition = partition ? partition.to_i : 0
       @mutex     = Mutex.new
     end
@@ -96,8 +98,8 @@ module MultiProcess
     # when timeout error is raised.
     #
     def run(delay: nil, timeout: nil)
-      if partition > 0
-        partition.times.map do
+      if partition.positive?
+        Array.new(partition) do
           Thread.new do
             while (process = next_process)
               process.run

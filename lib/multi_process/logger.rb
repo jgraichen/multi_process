@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MultiProcess
   # Can create pipes and multiplex pipe content to put into
   # given IO objects e.g. multiple output from multiple
@@ -12,7 +14,7 @@ module MultiProcess
     #   error sources.
     #
     def initialize(*args)
-      @opts  = Hash === args.last ? args.pop : {}
+      @opts  = args.last.is_a?(Hash) ? args.pop : {}
       @out   = args[0] || $stdout
       @err   = args[1] || $stderr
 
@@ -25,12 +27,12 @@ module MultiProcess
 
     def received(process, name, line)
       case name
-      when :err, :stderr
-        output process, line, io: @err, delimiter: 'E>'
-      when :out, :stdout
-        output process, line
-      when :sys
-        output(process, line, delimiter: '$>') if @opts[:sys]
+        when :err, :stderr
+          output process, line, io: @err, delimiter: 'E>'
+        when :out, :stdout
+          output process, line
+        when :sys
+          output(process, line, delimiter: '$>') if @opts[:sys]
       end
     end
 
@@ -49,15 +51,13 @@ module MultiProcess
     private
 
     def output(process, line, opts = {})
-      opts[:delimiter]   ||= ' |'
+      opts[:delimiter] ||= ' |'
       name = if opts[:name]
                opts[:name].to_s.dup
+             elsif process
+               process.title.to_s.rjust(@colwidth, ' ')
              else
-               if process
-                 process.title.to_s.rjust(@colwidth, ' ')
-               else
-                 (' ' * @colwidth)
-               end
+               (' ' * @colwidth)
              end
 
       io = opts[:io] || @out

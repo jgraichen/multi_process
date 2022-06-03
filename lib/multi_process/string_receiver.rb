@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MultiProcess
   # Receiver implementation storing process output
   # in string.
@@ -9,7 +11,7 @@ module MultiProcess
 
     def get(name)
       @strings ||= {}
-      @strings[name.to_s] ||= ''
+      @strings[name.to_s] ||= +''
     end
   end
 end

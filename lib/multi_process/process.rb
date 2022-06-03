@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_support/core_ext/module/delegation'
 
 module MultiProcess
@@ -20,14 +22,14 @@ module MultiProcess
 
     def initialize(*args)
       args.flatten!
-      opts = (Hash === args.last ? args.pop : {})
+      opts = (args.last.is_a?(Hash) ? args.pop : {})
 
       @title        = opts[:title].to_s || args.first.to_s.strip.split(/\s+/, 2)[0]
-      @command      = args.map { |arg| (arg =~ /\A[\s"']+\z/ ? arg.inspect : arg).gsub '"', '\"' }.join(' ')
-      @childprocess = create_childprocess *args
+      @command      = args.map {|arg| (/\A[\s"']+\z/.match?(arg) ? arg.inspect : arg).gsub '"', '\"' }.join(' ')
+      @childprocess = create_childprocess(*args)
 
-      @env          = opts[:env] if Hash === opts[:env]
-      @env_clean    = opts[:clean_env].nil? ? true : !!opts[:clean_env]
+      @env          = opts[:env] if opts[:env].is_a?(Hash)
+      @env_clean    = opts[:clean_env].nil? ? true : !opts[:clean_env].nil?
 
       self.receiver = opts[:receiver] || MultiProcess::Logger.global
 
@@ -63,7 +65,7 @@ module MultiProcess
       return false if started?
 
       at_exit { stop }
-      receiver.message(self, :sys, command) if receiver
+      receiver&.message(self, :sys, command)
       start_childprocess
       @started = true
     end
@@ -73,7 +75,7 @@ module MultiProcess
     # Will call `ChildProcess#stop`.
     #
     def stop(*args)
-      childprocess.stop *args if started?
+      childprocess.stop(*args) if started?
     end
 
     # Check if server is available. What available means can be defined
@@ -97,7 +99,7 @@ module MultiProcess
       Timeout.timeout timeout do
         sleep 0.2 until available?
       end
-    rescue Timeout::Error => ex
+    rescue Timeout::Error
       raise Timeout::Error.new "Server #{id.inspect} on port #{port} didn't get up after #{timeout} seconds..."
     end
 
@@ -150,7 +152,8 @@ module MultiProcess
     # Set environment.
     #
     def env=(env)
-      fail ArgumentError.new 'Environment must be a Hash.' unless hash === env
+      raise ArgumentError.new 'Environment must be a Hash.' unless env.is_a?(Hash)
+
       @env = env
     end
 
@@ -178,7 +181,7 @@ module MultiProcess
     # Create child process.
     #
     def create_childprocess(*args)
-      ChildProcess.new *args.flatten
+      ChildProcess.new(*args.flatten)
     end
 
     # Start child process.
@@ -186,7 +189,7 @@ module MultiProcess
     # Can be used to hook in subclasses and modules.
     #
     def start_childprocess
-      env.each { |k, v| childprocess.environment[k.to_s] = v.to_s }
+      env.each {|k, v| childprocess.environment[k.to_s] = v.to_s }
       childprocess.cwd = dir
 
       if clean_env?

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'multi_process/version'
 require 'childprocess'
 
