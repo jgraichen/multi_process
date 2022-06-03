@@ -53,7 +53,7 @@ describe MultiProcess do
 
     start = Time.now
     group.run
-    expect(Time.now - start).to be_within(0.3).of(2)
+    expect(Time.now - start).to be_within(0.5).of(2)
   end
 
   it 'envs processes' do
