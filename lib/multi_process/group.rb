@@ -89,6 +89,21 @@ module MultiProcess
       end
     end
 
+    # Wait until all process terminated.
+    #
+    # Raise an error if a process exists unsuccessfully.
+    #
+    # @param opts [ Hash ] Options.
+    # @option opts [ Integer ] :timeout Timeout in seconds to wait before raising {Timeout::Error}.
+    #
+    def wait!(timeout: nil)
+      if timeout
+        ::Timeout.timeout(timeout) { wait! }
+      else
+        processes.each(&:wait!)
+      end
+    end
+
     # Start all process and wait for them to terminate.
     #
     # Given options will be passed to {#start} and {#wait}.
@@ -99,16 +114,31 @@ module MultiProcess
     #
     def run(delay: nil, timeout: nil)
       if partition.positive?
-        Array.new(partition) do
-          Thread.new do
-            while (process = next_process)
-              process.run
-            end
-          end
-        end.each(&:join)
+        run_partition(&:run)
       else
-        start delay: delay
-        wait timeout: timeout
+        start(delay: delay)
+        wait(timeout: timeout)
+      end
+    ensure
+      stop
+    end
+
+    # Start all process and wait for them to terminate.
+    #
+    # Given options will be passed to {#start} and {#wait}. {#start}
+    # will only be called if partition is zero.
+    #
+    # If timeout is given process will be terminated using {#stop} when
+    # timeout error is raised.
+    #
+    # An error will be raised if any process exits unsuccessfully.
+    #
+    def run!(delay: nil, timeout: nil)
+      if partition.positive?
+        run_partition(&:run!)
+      else
+        start(delay: delay)
+        wait!(timeout: timeout)
       end
     ensure
       stop
@@ -152,6 +182,18 @@ module MultiProcess
         @index += 1
         processes[@index - 1]
       end
+    end
+
+    def run_partition
+      Array.new(partition) do
+        Thread.new do
+          Thread.current.report_on_exception = false
+
+          while (process = next_process)
+            yield process
+          end
+        end
+      end.each(&:join)
     end
   end
 end

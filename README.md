@@ -1,26 +1,30 @@
 # MultiProcess
 
-Handle multiple processes. Ruby >= 2.0.
-
-TODO: Just experiment.
+Run multiple processes.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'multi_process'
+```ruby
+gem 'multi_process'
+```
 
 And then execute:
 
-    $ bundle
+```
+$ bundle
+```
 
 Or install it yourself as:
 
-    $ gem install multi_process
+```
+$ gem install multi_process
+```
 
 ## Usage
 
-```
+```ruby
 receiver = MultiProcess::Logger $stdout, $stderr, sys: false
 group = MultiProcess::Group.new receiver: receiver
 group << MultiProcess::Process.new %w(ruby test.rb), title: 'rubyA'
@@ -43,7 +47,7 @@ group.stop  # Stop processes
 
 ## Contributing
 
-1. Fork it ( http://github.com/jgraichen/multi_process/fork )
+1. Fork it (http://github.com/jgraichen/multi_process/fork)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
@@ -51,7 +55,7 @@ group.stop  # Stop processes
 
 ## License
 
-Copyright (C) 2019  Jan Graichen
+Copyright © 2019 Jan Graichen
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

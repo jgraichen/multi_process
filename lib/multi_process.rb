@@ -6,6 +6,8 @@ require 'childprocess'
 module MultiProcess
   DEFAULT_TIMEOUT = 60
 
+  require 'multi_process/errors'
+
   require 'multi_process/loop'
   require 'multi_process/group'
   require 'multi_process/receiver'

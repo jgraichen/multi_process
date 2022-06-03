@@ -56,6 +56,20 @@ module MultiProcess
       end
     end
 
+    # Wait until process finished.
+    #
+    # If no timeout is given it will wait definitely.
+    #
+    # @param opts [Hash] Options.
+    # @option opts [Integer] :timeout Timeout to wait in seconds.
+    #
+    def wait!(opts = {})
+      wait(opts)
+      return if exit_code.zero?
+
+      raise ::MultiProcess::ProcessError.new(self, "Process #{pid} exited with code #{exit_code}")
+    end
+
     # Start process.
     #
     # Started processes will be stopped when ruby VM exists by hooking into
@@ -116,6 +130,15 @@ module MultiProcess
     def run(opts = {})
       start
       wait opts
+    end
+
+    # Start process and wait until it's finished.
+    #
+    # Given arguments will be passed to {#wait!}.
+    #
+    def run!(opts = {})
+      start
+      wait!(opts)
     end
 
     # @!group Working Directory
