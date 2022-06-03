@@ -2,10 +2,10 @@
 
 source 'https://rubygems.org'
 
-gem 'rake'
-gem 'rspec', '>= 3.0.0.beta1'
-
 # Specify your gem's dependencies in multi_process.gemspec
 gemspec
 
+gem 'rake'
+gem 'rake-release', '~> 1.3'
+gem 'rspec', '~> 3.11'
 gem 'rubocop-config', github: 'jgraichen/rubocop-config', ref: 'v9', require: false
