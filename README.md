@@ -27,9 +27,9 @@ $ gem install multi_process
 ```ruby
 receiver = MultiProcess::Logger $stdout, $stderr, sys: false
 group = MultiProcess::Group.new receiver: receiver
-group << MultiProcess::Process.new %w(ruby test.rb), title: 'rubyA'
-group << MultiProcess::Process.new %w(ruby test.rb), title: 'rubyB'
-group << MultiProcess::Process.new %w(ruby test.rb), title: 'rubyC'
+group << MultiProcess::Process.new %w[ruby test.rb], title: 'rubyA'
+group << MultiProcess::Process.new %w[ruby test.rb], title: 'rubyB'
+group << MultiProcess::Process.new %w[ruby test.rb], title: 'rubyC'
 group.start # Start in background
 group.run   # Block until finished
 group.wait  # Wait until finished
