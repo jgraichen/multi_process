@@ -41,7 +41,7 @@ module MultiProcess
 
     # Delegate some methods to ChildProcess.
     #
-    delegate [:exited?, :alive?, :crashed?, :exit_code, :pid] => :childprocess
+    delegate %i[exited? alive? crashed? exit_code pid] => :childprocess
 
     # Wait until process finished.
     #
