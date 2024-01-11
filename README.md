@@ -12,14 +12,14 @@ gem 'multi_process'
 
 And then execute:
 
-```
-$ bundle
+```console
+bundle
 ```
 
 Or install it yourself as:
 
-```
-$ gem install multi_process
+```console
+gem install multi_process
 ```
 
 ## Usage
@@ -36,7 +36,7 @@ group.wait  # Wait until finished
 group.stop  # Stop processes
 ```
 
-```
+```text
 (23311) rubyB | Output from B
 (23308) rubyA | Output from A
 (23314) rubyC | Output from C
@@ -55,7 +55,7 @@ group.stop  # Stop processes
 
 ## License
 
-Copyright © 2019 Jan Graichen
+Copyright © 2019-2023 Jan Graichen
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
