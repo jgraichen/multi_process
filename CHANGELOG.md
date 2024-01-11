@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Remove dependency on ActiveSupport by @tylerhunt (#9)
+
 ## [1.2.0] - 2022-06-03
 
 ### Added
@@ -30,7 +34,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Possible concurrent hash modification while iterating (#1)
 
-[unreleased]: https://github.com/jgraichen/multi_process/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/jgraichen/multi_process/compare/v1.2.0...HEAD
 [1.2.0]: https://github.com/jgraichen/multi_process/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/jgraichen/multi_process/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/jgraichen/multi_process/compare/v1.0.0...v1.1.0
