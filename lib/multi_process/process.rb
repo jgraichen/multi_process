@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'active_support/core_ext/module/delegation'
+require 'forwardable'
 
 module MultiProcess
   #
@@ -9,6 +9,8 @@ module MultiProcess
   # {Process} basically is just a thin wrapper around {ChildProcess}.
   #
   class Process
+    extend Forwardable
+
     # @!group Process
 
     # Process title used in e.g. logger
@@ -39,7 +41,7 @@ module MultiProcess
 
     # Delegate some methods to ChildProcess.
     #
-    delegate :exited?, :alive?, :crashed?, :exit_code, :pid, to: :childprocess
+    delegate [:exited?, :alive?, :crashed?, :exit_code, :pid] => :childprocess
 
     # Wait until process finished.
     #

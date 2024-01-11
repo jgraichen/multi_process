@@ -22,7 +22,6 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'activesupport', '>= 3.1'
   spec.add_runtime_dependency 'childprocess'
   spec.add_runtime_dependency 'nio4r', '~> 2.0'
 
