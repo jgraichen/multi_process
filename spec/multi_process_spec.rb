@@ -40,6 +40,25 @@ describe MultiProcess do
     expect(Time.now - start).to be < 2
   end
 
+  it 'starts a process added after the group has been started' do
+    reader, writer = IO.pipe
+
+    logger = MultiProcess::Logger.new writer, collapse: false
+    group  = MultiProcess::Group.new receiver: logger
+    group << MultiProcess::Process.new(%w[ruby spec/files/test.rb 1], title: 'ruby1')
+    group.start
+    group << MultiProcess::Process.new(%w[ruby spec/files/test.rb 2], title: 'ruby2')
+    sleep 1
+    group.stop
+
+    expect(reader.read_nonblock(4096).split("\n")).to match_array <<-OUTPUT.gsub(/^\s+\./, '').split("\n")
+    . ruby1  | Output from 1
+    . ruby1  | Output from 1
+    . ruby2  | Output from 2
+    . ruby2  | Output from 2
+    OUTPUT
+  end
+
   it 'partitions processes' do
     group = MultiProcess::Group.new partition: 4, receiver: MultiProcess::NilReceiver.new
     group << MultiProcess::Process.new(%w[ruby sleep.rb 1], dir: 'spec/files', title: 'rubyA')
