@@ -42,7 +42,7 @@ module MultiProcess
         processes << process
         process.receiver = receiver
 
-        start process if started?
+        process.start if started?
       end
     end
 
