@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'timeout'
+
 module MultiProcess
   #
   # Store and run a group of processes.
