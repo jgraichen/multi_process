@@ -13,14 +13,15 @@ describe MultiProcess do
     group << MultiProcess::Process.new(%w[ruby spec/files/test.rb C], title: 'rubyCCC')
     group.run
 
-    expect(reader.read_nonblock(4096).split("\n")).to match_array <<-OUTPUT.gsub(/^\s+\./, '').split("\n")
-    .  rubyBB  | Output from B
-    .   rubyA  | Output from A
-    .   rubyA  | Output from A
-    . rubyCCC  | Output from C
-    . rubyCCC  | Output from C
-    .  rubyBB  | Output from B
-    OUTPUT
+    expect(reader.read_nonblock(4096).lines)
+      .to match_array <<~OUTPUT.gsub(/^\./, '').lines
+        .  rubyBB  | Output from B
+        .   rubyA  | Output from A
+        .   rubyA  | Output from A
+        . rubyCCC  | Output from C
+        . rubyCCC  | Output from C
+        .  rubyBB  | Output from B
+      OUTPUT
   end
 
   it 'runs processes (II)' do
@@ -50,12 +51,13 @@ describe MultiProcess do
     group << MultiProcess::Process.new(%w[ruby spec/files/test.rb 2], title: 'ruby2')
     group.wait
 
-    expect(reader.read_nonblock(4096).split("\n")).to match_array <<-OUTPUT.gsub(/^\s+\./, '').split("\n")
-    . ruby1  | Output from 1
-    . ruby1  | Output from 1
-    . ruby2  | Output from 2
-    . ruby2  | Output from 2
-    OUTPUT
+    expect(reader.read_nonblock(4096).lines)
+      .to match_array <<~OUTPUT.gsub(/^\./, '').lines
+        . ruby1  | Output from 1
+        . ruby1  | Output from 1
+        . ruby2  | Output from 2
+        . ruby2  | Output from 2
+      OUTPUT
   end
 
   it 'partitions processes' do
