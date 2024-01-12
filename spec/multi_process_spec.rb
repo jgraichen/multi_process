@@ -48,8 +48,7 @@ describe MultiProcess do
     group << MultiProcess::Process.new(%w[ruby spec/files/test.rb 1], title: 'ruby1')
     group.start
     group << MultiProcess::Process.new(%w[ruby spec/files/test.rb 2], title: 'ruby2')
-    sleep 1
-    group.stop
+    group.wait
 
     expect(reader.read_nonblock(4096).split("\n")).to match_array <<-OUTPUT.gsub(/^\s+\./, '').split("\n")
     . ruby1  | Output from 1
