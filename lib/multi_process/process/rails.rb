@@ -30,7 +30,8 @@ class MultiProcess::Process
     end
 
     def port=(port)
-      @port = port.to_i.zero? ? free_port : port.to_i
+      port = Integer(port)
+      @port = port.zero? ? free_port : port
     end
 
     def port
