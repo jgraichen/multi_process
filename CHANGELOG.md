@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Fix adding a process after the group has been started by @tylerhunt (#11)
+- Use unbundled environment for child processes to support nested bundler invokations by @tylerhunt (#10)
+
 ## [1.2.1] - 2024-01-11
 
 ### Added
