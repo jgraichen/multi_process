@@ -13,7 +13,8 @@ module MultiProcess
         let(:command) { %w[ruby spec/files/fail.rb] }
 
         it 'does raise an error' do
-          expect { group.run! }.to raise_error(ProcessError, /Process \d+ exited with code 1/)
+          expect { group.run! }
+            .to raise_error(ProcessError, /Process \d+ exited with code 1/)
         end
       end
 
@@ -23,7 +24,8 @@ module MultiProcess
         let(:command) { %w[ruby spec/files/fail.rb] }
 
         it 'does raise an error' do
-          expect { group.run! }.to raise_error(ProcessError, /Process \d+ exited with code 1/)
+          expect { group.run! }
+            .to raise_error(ProcessError, /Process \d+ exited with code 1/)
         end
       end
     end

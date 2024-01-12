@@ -9,7 +9,8 @@ module MultiProcess
         let(:command) { %w[ruby spec/files/fail.rb] }
 
         it 'does raise an error' do
-          expect { process.run! }.to raise_error(ProcessError, /Process \d+ exited with code 1/)
+          expect { process.run! }
+            .to raise_error(ProcessError, /Process \d+ exited with code 1/)
         end
       end
     end
@@ -21,7 +22,8 @@ module MultiProcess
         it 'does raise an error' do
           process.run!
 
-          expect { process.available! timeout: 0.1 }.to raise_error(Timeout::Error, /Process \d+ failed to start/)
+          expect { process.available! timeout: 0.1 }
+            .to raise_error(Timeout::Error, /Process \d+ failed to start/)
         end
       end
     end
