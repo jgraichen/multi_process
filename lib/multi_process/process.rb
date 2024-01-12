@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'forwardable'
+require 'timeout'
 
 module MultiProcess
   #
@@ -94,29 +95,29 @@ module MultiProcess
       childprocess.stop(*args) if started?
     end
 
-    # Check if server is available. What available means can be defined
-    # by subclasses e.g. a server process can check if server port is reachable.
+    # Check if the process is available. What available means can be defined
+    # by subclasses e.g. a server process can check if its port is reachable.
     #
-    # By default is process if available if alive? returns true.
+    # By default a process is available if `#alive?` returns true.
     #
     def available?
       alive?
     end
 
-    # Wait until process is available. See {#available?}.
+    # Wait until the process is available. See {#available?}.
     #
     # @param opts [Hash] Options.
     # @option opts [Integer] :timeout Timeout in seconds. Will raise
     #  Timeout::Error if timeout is reached.
     #
     def available!(opts = {})
-      timeout = opts[:timeout] ? opts[:timeout].to_i : MultiProcess::DEFAULT_TIMEOUT
+      timeout = opts[:timeout] ? Float(opts[:timeout]) : MultiProcess::DEFAULT_TIMEOUT
 
       Timeout.timeout timeout do
         sleep 0.2 until available?
       end
     rescue Timeout::Error
-      raise Timeout::Error.new "Server #{id.inspect} on port #{port} didn't get up after #{timeout} seconds..."
+      raise Timeout::Error.new "Process #{pid} failed to start."
     end
 
     # Check if process was started.

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'timeout'
+
 module MultiProcess
   #
   # Store and run a group of processes.
@@ -27,7 +29,7 @@ module MultiProcess
     def initialize(receiver: nil, partition: nil)
       @processes = []
       @receiver  = receiver || MultiProcess::Logger.global
-      @partition = partition ? partition.to_i : 0
+      @partition = partition ? Integer(partition) : 0
       @mutex     = Mutex.new
     end
 
