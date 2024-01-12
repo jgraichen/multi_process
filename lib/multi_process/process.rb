@@ -161,7 +161,7 @@ module MultiProcess
     # Check if environment will be cleaned up for process.
     #
     # Currently that includes wrapping the process start in
-    # `Bundler.with_clean_env` to remove bundler environment
+    # `Bundler.with_unbundled_env` to remove bundler environment
     # variables.
     #
     def clean_env?
@@ -218,7 +218,7 @@ module MultiProcess
       childprocess.cwd = dir
 
       if clean_env?
-        Bundler.with_original_env { childprocess.start }
+        Bundler.with_unbundled_env { childprocess.start }
       else
         childprocess.start
       end
