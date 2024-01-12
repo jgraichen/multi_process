@@ -111,7 +111,7 @@ module MultiProcess
     #  Timeout::Error if timeout is reached.
     #
     def available!(opts = {})
-      timeout = opts[:timeout] ? opts[:timeout].to_i : MultiProcess::DEFAULT_TIMEOUT
+      timeout = opts[:timeout] ? opts[:timeout].to_f : MultiProcess::DEFAULT_TIMEOUT
 
       Timeout.timeout timeout do
         sleep 0.2 until available?

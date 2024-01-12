@@ -17,12 +17,12 @@ RSpec.describe MultiProcess::Process do
 
   describe '#available!' do
     context 'when timeout is reached' do
-      let(:command) { %w[ruby spec/files/sleep.rb 2] }
+      let(:command) { %w[ruby spec/files/sleep.rb 0.2] }
 
       it 'does raise an error' do
         process.run!
 
-        expect { process.available! timeout: 1 }.to raise_error(Timeout::Error, /Process \d+ failed to start/)
+        expect { process.available! timeout: 0.1 }.to raise_error(Timeout::Error, /Process \d+ failed to start/)
       end
     end
   end
