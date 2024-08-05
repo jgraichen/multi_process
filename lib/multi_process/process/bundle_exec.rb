@@ -7,7 +7,7 @@ class MultiProcess::Process
   module BundleExec
     def initialize(*args)
       opts = args.last.is_a?(Hash) ? args.pop : {}
-      super %w[bundle exec] + args, opts
+      super(%w[bundle exec] + args, opts)
     end
   end
 end
