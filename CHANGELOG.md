@@ -8,10 +8,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Changed
 
+- Find free port in a cross-platform way by @tylerhunt (#13)
 - Use unbundled environment for child processes to support nested bundler invocations by @tylerhunt (#10)
 
 ### Fixed
 
+- Fix Process#available! error handling by @tylerhunt (#12)
+- Non-deterministic output causing intermittent spec failure by @tylerhunt (#14)
 - Fix adding a process after the group has been started by @tylerhunt (#11)
 
 ## [1.2.1] - 2024-01-11
