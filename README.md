@@ -4,7 +4,7 @@ Run multiple processes.
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add this line to your application's `Gemfile`:
 
 ```ruby
 gem 'multi_process'
@@ -47,7 +47,7 @@ group.stop  # Stop processes
 
 ## Contributing
 
-1. Fork it (http://github.com/jgraichen/multi_process/fork)
+1. Fork it (<http://github.com/jgraichen/multi_process/fork>)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
@@ -55,7 +55,7 @@ group.stop  # Stop processes
 
 ## License
 
-Copyright © 2019-2023 Jan Graichen
+Copyright © 2019-2025 Jan Graichen
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

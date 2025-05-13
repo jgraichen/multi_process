@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Changed
 
-- Use unbundled environment for child processes to support nested bundler invokations by @tylerhunt (#10)
+- Use unbundled environment for child processes to support nested bundler invocations by @tylerhunt (#10)
 
 ### Fixed
 

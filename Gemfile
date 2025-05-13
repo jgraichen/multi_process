@@ -8,4 +8,13 @@ gemspec
 gem 'rake'
 gem 'rake-release', '~> 1.3'
 gem 'rspec', '~> 3.11'
-gem 'rubocop-config', github: 'jgraichen/rubocop-config', ref: 'v12', require: false
+
+group :development do
+  gem 'rubocop-config', github: 'jgraichen/rubocop-config', tag: 'v14'
+end
+
+group :test do
+  gem 'rspec-github'
+  gem 'simplecov'
+  gem 'simplecov-cobertura'
+end

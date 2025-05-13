@@ -1,10 +1,18 @@
 # frozen_string_literal: true
 
+require 'simplecov'
+require 'simplecov-cobertura'
+
+SimpleCov.start do
+  add_filter 'spec'
+end
+
+SimpleCov.formatters = [
+  SimpleCov::Formatter::HTMLFormatter,
+  SimpleCov::Formatter::CoberturaFormatter,
+]
+
 require 'rspec'
-
-require 'bundler'
-Bundler.require
-
 require 'multi_process'
 
 Dir[File.expand_path('spec/support/**/*.rb')].sort.each {|f| require f }
@@ -26,4 +34,9 @@ RSpec.configure do |config|
 
   # Raise error when using old :should expectation syntax.
   config.raise_errors_for_deprecations!
+
+  config.expect_with :rspec do |c|
+    # Only allow expect syntax
+    c.syntax = :expect
+  end
 end
