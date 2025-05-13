@@ -32,7 +32,7 @@ module MultiProcess
       @childprocess = create_childprocess(*args)
 
       @env          = opts[:env] if opts[:env].is_a?(Hash)
-      @env_clean    = opts[:clean_env].nil? ? true : !opts[:clean_env].nil?
+      @env_clean    = opts[:clean_env].nil? || !opts[:clean_env].nil?
 
       self.receiver = opts[:receiver] || MultiProcess::Logger.global
 
