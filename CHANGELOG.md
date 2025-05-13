@@ -6,15 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [1.4.0] - 2025-05-13
+
 ### Changed
 
 - Find free port in a cross-platform way by @tylerhunt (#13)
-- Use unbundled environment for child processes to support nested bundler invocations by @tylerhunt (#10)
 
 ### Fixed
 
 - Fix Process#available! error handling by @tylerhunt (#12)
 - Non-deterministic output causing intermittent spec failure by @tylerhunt (#14)
+
+## [1.3.0] - 2024-01-12
+
+### Changed
+
+- Use unbundled environment for child processes to support nested bundler invocations by @tylerhunt (#10)
+
+### Fixed
+
 - Fix adding a process after the group has been started by @tylerhunt (#11)
 
 ## [1.2.1] - 2024-01-11
@@ -48,7 +58,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Possible concurrent hash modification while iterating (#1)
 
-[Unreleased]: https://github.com/jgraichen/multi_process/compare/v1.2.1...HEAD
+[Unreleased]: https://github.com/jgraichen/multi_process/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/jgraichen/multi_process/compare/v1.3.0...v1.4.0
+[1.3.0]: https://github.com/jgraichen/multi_process/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/jgraichen/multi_process/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/jgraichen/multi_process/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/jgraichen/multi_process/compare/v1.1.0...v1.1.1
