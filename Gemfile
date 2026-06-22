@@ -10,7 +10,7 @@ gem 'rake-release', '~> 1.3'
 gem 'rspec', '~> 3.11'
 
 group :development do
-  gem 'rubocop-config', github: 'jgraichen/rubocop-config', tag: 'v14'
+  gem 'rubocop-config', github: 'jgraichen/rubocop-config', tag: 'v15'
 end
 
 group :test do
