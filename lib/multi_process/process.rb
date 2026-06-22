@@ -27,7 +27,7 @@ module MultiProcess
       args.flatten!
       opts = (args.last.is_a?(Hash) ? args.pop : {})
 
-      @title        = opts[:title].to_s || args.first.to_s.strip.split(/\s+/, 2)[0]
+      @title        = (opts[:title] || args.first.to_s.strip.split(/\s+/, 2)[0]).to_s
       @command      = args.map {|arg| (/\A[\s"']+\z/.match?(arg) ? arg.inspect : arg).gsub '"', '\"' }.join(' ')
       @childprocess = create_childprocess(*args)
 
